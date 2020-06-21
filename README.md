@@ -1,5 +1,5 @@
 # PatchMod
-An Unturned Module that allows you to make scheduled rocket changes the next time the server restarts.
+An Unturned Module that allows you to make scheduled rocket changes for the next time the server restarts.
 
 This module loads before RocketMod, so that it can access RocketMod's files before it loads.
 
