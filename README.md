@@ -3,7 +3,7 @@ An Unturned Module that allows you to make scheduled rocket changes the next tim
 
 This module loads before RocketMod, so that it can access RocketMod's files before it loads.
 
-It creates a sort of 'mirror' folder in your server folder. Any files/folders placed in this folder will be moved to rocket (overwriting where needed).
+It creates a sort of 'mirror' folder in your server folder. Any files/folders placed in this folder will be moved to rocket (overwriting where needed) the next time the server restarts.
 
 PatchMod also provides a file to schedule file deletions.
 
