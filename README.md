@@ -60,4 +60,6 @@ This will delete MyPlugin.dll, and delete it's config file, including all the fi
 
 The Remove List is cleared after each time it is used, so you don't have to worry about it double deleting.
 
+## Downloads
 
+See <a href="https://github.com/ShimmyMySherbet/PatchMod/releases">Release</a> for downloads.
