@@ -67,9 +67,5 @@
     <Compile Include="Modules\PathHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Scripts\Patch.bat" />
-    <None Include="Scripts\StartServer.bat" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
