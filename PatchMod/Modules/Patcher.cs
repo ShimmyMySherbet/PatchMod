@@ -60,7 +60,7 @@ namespace PatchMod.Modules
                 {
                     string DelLine = _DelLine;
                     DelLine = DelLine.Trim(' ');
-                    if (DelLine.StartsWith("#") || DelLine == "") continue;
+                    if (DelLine.StartsWith("#") || DelLine.Length == 0) continue;
                     if (!PatchSent)
                     {
                         CheckSendPatchMessage();

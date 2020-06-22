@@ -13,9 +13,9 @@ namespace PatchMod.Modules
             bool LogToP = false;
             if (PatchMod.Config != null)
             {
-                LogToR = Convert.ToBoolean(PatchMod.Config.ReadValue("LogOutputToRocketModLog"));
-                LogToP = Convert.ToBoolean(PatchMod.Config.ReadValue("LogOutputToPatchModLog"));
-                if (!Convert.ToBoolean(PatchMod.Config.ReadValue("LogOutput")))
+                LogToR = Convert.ToBoolean(PatchMod.Config["LogOutputToRocketModLog"]);
+                LogToP = Convert.ToBoolean(PatchMod.Config["LogOutputToPatchModLog"]);
+                if (!Convert.ToBoolean(PatchMod.Config["LogOutput"]))
                 {
                     LogToP = false;
                     LogToR = false;

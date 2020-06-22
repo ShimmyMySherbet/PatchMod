@@ -1,118 +1,263 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace PatchMod.Components
 {
-    public class INIReader
+    public class INIFile
     {
-        public List<INIAsset> Assets = new List<INIAsset>();
+        private List<IniLine> Data = new List<IniLine>();
+        private string LoadFile = "";
+        public bool HasUnsavedChanges { get; protected set; }
 
-        public void LoadFile(string File)
+        public INIFile(string file = "")
         {
-            if (System.IO.File.Exists(File))
+            if (!string.IsNullOrEmpty(file))
             {
-                string[] Lines = System.IO.File.ReadAllLines(File);
-                foreach (string Line in Lines)
+                var ioinf = new FileInfo(file);
+                file = ioinf.FullName;
+                LoadFile = file;
+                foreach (string line in File.ReadAllLines(file))
                 {
-                    if (!Line.StartsWith("#") && !Line.StartsWith(";") && Line.Contains("="))
+                    if (!line.StartsWith("#") & !string.IsNullOrEmpty(line) & line.Contains("="))
                     {
-                        Assets.Add(INIKey.FromLine(Line));
+                        string Key = line.Split('=')[0];
+                        string Value = line.Remove(0, Key.Length + 1);
+                        Data.Add(new IniLine()
+                        {
+                            Key = Key,
+                            Value = Value,
+                            IsDataEntry = true,
+                            Line = ""
+                        });
                     }
                     else
                     {
-                        Assets.Add(new INIEntity() { Content = Line });
+                        Data.Add(new IniLine()
+                        {
+                            IsDataEntry = false,
+                            Line = line
+                        });
                     }
                 }
             }
         }
 
-        public void WriteComment(string Line)
+        public Dictionary<string, string> DataDictionary
         {
-            Assets.Add(new INIEntity() { Content = "#" + Line });
+            get
+            {
+                var dict = new Dictionary<string, string>();
+                foreach (var x in Data)
+                {
+                    if (x.IsDataEntry)
+                    {
+                        dict.Add(x.Key, x.Value);
+                    }
+                }
+
+                return dict;
+            }
         }
 
-        public void SetKey(string Key, object Value)
+        public List<string> Keys
         {
-            foreach (var ent in Assets)
+            get
             {
-                if (ent.Type == INIAssetType.Key && ((INIKey)ent).Key.ToLower() == Key.ToLower())
+                var res = new List<string>();
+                Data.ForEach(x => { if (x.IsDataEntry) { res.Add(x.Key); } });
+                return res;
+            }
+        }
+
+        public List<string> Values
+        {
+            get
+            {
+                var res = new List<string>();
+                Data.ForEach(x => { if (x.IsDataEntry) { res.Add(x.Value); } });
+                return res;
+            }
+        }
+
+        public object this[string Key, Type T]
+        {
+            get
+            {
+                object ent = this[Key];
+                string estr = ent.ToString();
+                if (T == typeof(bool)) return Convert.ToBoolean(estr);
+                if (T == typeof(double)) return Convert.ToDouble(estr);
+                if (T == typeof(int)) return Convert.ToInt32(estr);
+                if (T == typeof(long)) return Convert.ToInt64(estr);
+                if (T == typeof(string)) return estr;
+                if (T == typeof(byte)) return Convert.ToByte(estr);
+                if (T == typeof(char)) return Convert.ToChar(estr);
+                if (T == typeof(DateTime)) return Convert.ToDateTime(estr);
+                if (T == typeof(decimal)) return Convert.ToDecimal(estr);
+                if (T == typeof(short)) return Convert.ToInt16(estr);
+                if (T == typeof(sbyte)) return Convert.ToSByte(estr);
+                if (T == typeof(float)) return Convert.ToSingle(estr);
+                if (T == typeof(ushort)) return Convert.ToUInt16(estr);
+                if (T == typeof(uint)) return Convert.ToUInt32(estr);
+                if (T == typeof(ulong)) return Convert.ToUInt64(estr);
+                return ent;
+            }
+        }
+
+
+        public object this[string Key]
+        {
+            get
+            {
+                return Data.Where(x => { if (x.IsDataEntry) { return (x.Key.ToLower() ?? "") == (Key.ToLower() ?? ""); } else { return false; } }).First().Value;
+            }
+            set
+            {
+                HasUnsavedChanges = true;
+                bool found = false;
+                foreach (var x in Data)
                 {
-                    ((INIKey)ent).Value = Value.ToString();
-                    return;
+                    if (x.IsDataEntry)
+                    {
+                        if ((x.Key.ToLower() ?? "") == (Key.ToLower() ?? ""))
+                        {
+                            x.Value = value.ToString();
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!found)
+                {
+                    Data.Add(new IniLine()
+                    {
+                        IsDataEntry = true,
+                        Key = Key,
+                        Value = value.ToString(),
+                        Line = ""
+                    });
                 }
             }
-            int i = Assets.Count;
-            foreach (var ent in Assets)
+        }
+
+        public void PatchKey(string Key, object DefaultValue)
+        {
+            if (!KeySet(Key))
             {
-                if (ent.Type == INIAssetType.Key)
+                this[Key] = DefaultValue.ToString();
+                HasUnsavedChanges = true;
+            }
+        }
+
+        public bool KeySet(string Key)
+        {
+            bool ret = false;
+            foreach (var x in Data)
+            {
+                if (x.IsDataEntry)
                 {
-                    i = Assets.IndexOf(ent);
+                    if ((x.Key.ToLower() ?? "") == (Key.ToLower() ?? ""))
+                    {
+                        ret = true;
+                    }
                 }
             }
-            Assets.Insert(i, new INIKey() { Key = Key, Value = Value.ToString() });
-        }
 
-        public string ReadValue(string Key)
-        {
-            foreach (var ent in Assets)
-            {
-                if (ent.Type == INIAssetType.Key && ((INIKey)ent).Key.ToLower() == Key.ToLower())
-                {
-                    return ((INIKey)ent).Value;
-                }
-            }
-            return "";
-        }
-
-        public void SaveFile(string File)
-        {
-            List<string> Lines = new List<string>();
-            foreach (INIAsset Asset in Assets)
-            {
-                Lines.Add(Asset.GetContent);
-            }
-            if (System.IO.File.Exists(File))
-            {
-                System.IO.File.SetAttributes(File, System.IO.FileAttributes.Normal);
-            }
-            System.IO.File.WriteAllLines(File, Lines);
-        }
-    }
-
-    public abstract class INIAsset
-    {
-        public abstract INIAssetType Type { get; }
-        public abstract string GetContent { get; }
-    }
-
-    public class INIEntity : INIAsset
-    {
-        public string Content;
-        public override INIAssetType Type => INIAssetType.Content;
-
-        public override string GetContent => Content;
-    }
-
-    public class INIKey : INIAsset
-    {
-        public override INIAssetType Type => INIAssetType.Key;
-
-        public override string GetContent => $"{Key}={Value}";
-
-        public string Key;
-        public string Value;
-
-        public static INIKey FromLine(string Line)
-        {
-            INIKey ret = new INIKey();
-            ret.Key = Line.Split('=')[0];
-            ret.Value = Line.Remove(0, ret.Key.Length + 1);
             return ret;
         }
-    }
 
-    public enum INIAssetType
-    {
-        Content = 1,
-        Key = 2
+        public void Save(string File = "", bool Overwrite = true)
+        {
+            if (string.IsNullOrEmpty(File))
+            {
+                if (!string.IsNullOrEmpty(LoadFile))
+                {
+                    File = LoadFile;
+                }
+                else
+                {
+                    throw new Exception("Cannot save; no specified file or load file.");
+                }
+            }
+            HasUnsavedChanges = false;
+            if (Overwrite)
+            {
+                System.IO.File.WriteAllText(File, ToINIString());
+            }
+            else
+            {
+                System.IO.File.AppendAllLines(File, IniLines());
+            }
+        }
+
+        public void Save(Stream Stream, Encoding Encoding = null)
+        {
+            if (Encoding == null)
+            {
+                Encoding = Encoding.UTF8;
+            }
+            HasUnsavedChanges = false;
+            var Bytes = Encoding.GetBytes(ToINIString());
+            Stream.Write(Bytes, 0, Bytes.Count());
+        }
+
+        public string ToINIString()
+        {
+            var Lines = new List<string>();
+            foreach (var entry in Data)
+            {
+                if (entry.IsDataEntry)
+                {
+                    Lines.Add($"{entry.Key}={entry.Value}");
+                }
+                else
+                {
+                    Lines.Add(entry.Line);
+                }
+            }
+
+            return string.Join(Environment.NewLine, Lines);
+        }
+
+        public void WriteComment(string Comment)
+        {
+            HasUnsavedChanges = true;
+            Data.Add(new IniLine() { IsDataEntry = false, Line = "#" + Comment });
+        }
+
+        public void WriteLine(string Line = "")
+        {
+            HasUnsavedChanges = true;
+            Data.Add(new IniLine() { IsDataEntry = false, Line = Line });
+        }
+        private List<string> IniLines()
+        {
+            var Lines = new List<string>();
+            foreach (var entry in Data)
+            {
+                if (entry.IsDataEntry)
+                {
+                    Lines.Add($"{entry.Key}={entry.Value}");
+                }
+                else
+                {
+                    Lines.Add(entry.Line);
+                }
+            }
+
+            return Lines;
+        }
+
+        private partial class IniLine
+        {
+            public bool IsDataEntry = false;
+            public string Key = "";
+            public string Line = "";
+            public string Value = "";
+        }
     }
 }

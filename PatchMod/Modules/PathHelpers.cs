@@ -79,6 +79,14 @@ namespace PatchMod.Modules
             }
         }
 
+        public static string PathModSyncExclusions
+        {
+            get
+            {
+                return Path.Combine(PatchModDirectory, ".SyncExclude");
+            }
+        }
+
         public static void CheckDirectories()
         {
             if (!Directory.Exists(PatchModDirectory))
@@ -91,19 +99,18 @@ namespace PatchMod.Modules
                 Directory.CreateDirectory(PatchModPluginsDirectory);
             if (!File.Exists(Path.Combine(PatchModPatchDirectory, "patchmod.remlist.txt")))
                 File.WriteAllText(Path.Combine(PatchModPatchDirectory, "patchmod.remlist.txt"), "#Put paths to file/folders to delete in here.\n");
+            if (!File.Exists(PathModSyncExclusions))
+                File.WriteAllText(PathModSyncExclusions, "#Put paths to files/folders in here to exclude from syncing. Prefix paths with '!' to sync them.\n");
             if (!File.Exists(PatchModConfig))
             {
-                PatchMod.Config = new Components.INIReader();
-                PatchMod.Config.WriteComment("PatchMod Configuration File");
-                PatchMod.Config.SetKey("LogOutput", true);
-                PatchMod.Config.SetKey("LogOutputToPatchModLog", true);
-                PatchMod.Config.SetKey("LogOutputToRocketModLog", true);
-                PatchMod.Config.SaveFile(PatchModConfig);
+                PatchMod.Config = ConfigBuilder.CreateDefaultConfig();
+                PatchMod.Config.Save(PatchModConfig);
             }
             else
             {
-                PatchMod.Config = new Components.INIReader();
-                PatchMod.Config.LoadFile(PatchModConfig);
+                PatchMod.Config = new Components.INIFile(PatchModConfig);
+                ConfigBuilder.CheckConfig(PatchMod.Config);
+                if (PatchMod.Config.HasUnsavedChanges) PatchMod.Config.Save();
             }
         }
 
@@ -113,7 +120,6 @@ namespace PatchMod.Modules
             {
                 DirectoryInfo BaseSpec = new DirectoryInfo(BaseDirectory);
                 DirectoryInfo ScopeSpec = new DirectoryInfo(InnerScope);
-
                 return ScopeSpec.FullName.Remove(0, BaseSpec.FullName.Length);
             }
             catch (Exception ex)

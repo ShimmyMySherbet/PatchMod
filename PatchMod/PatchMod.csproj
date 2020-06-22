@@ -38,11 +38,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\Documents\RocketModLibraries\MOD\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="FluentFTP, Version=32.4.3.0, Culture=neutral, PublicKeyToken=f4af092b1d8df44f, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentFTP.32.4.3\lib\net45\FluentFTP.dll</HintPath>
+    </Reference>
     <Reference Include="Rocket.Core">
       <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\Rocket.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -60,12 +64,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SyncProviders\LocalSyncSource.cs" />
+    <Compile Include="Models\SyncExclusion.cs" />
+    <Compile Include="Models\SyncExclusionList.cs" />
+    <Compile Include="Models\SyncFile.cs" />
+    <Compile Include="Models\SyncDirectory.cs" />
+    <Compile Include="Models\SyncSource.cs" />
+    <Compile Include="Modules\ConfigBuilder.cs" />
+    <Compile Include="Modules\FileSync.cs" />
+    <Compile Include="Modules\SyncProviderManager.cs" />
     <Compile Include="PatchMod.cs" />
     <Compile Include="Components\INIReader.cs" />
     <Compile Include="Modules\LogClient.cs" />
     <Compile Include="Modules\Patcher.cs" />
     <Compile Include="Modules\PathHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SyncProviders\FTPSyncSource.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="PatchmodScripts\Patch.bat" />
+    <None Include="PatchmodScripts\StartServer.bat" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
