@@ -22,11 +22,8 @@ namespace PatchMod
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
-                Console.WriteLine(ex.StackTrace);
-                Console.WriteLine(ex.Source);
+                LogClient.LogMessage($"Failed to sync: {ex.Message}");
             }
-            LogClient.LogMessage("PatchMod.SyncStop");
             Console.ReadLine();
         }
 
@@ -37,9 +34,13 @@ namespace PatchMod
             LogClient.LogMessage("PatchMod Loaded");
             Patcher.Patch();
 
+            if (Patcher.PatchMessageSent)
+            {
+                LogClient.LogMessage($"Patches Complete");
+            }
+
             if ((bool)PatchMod.Config["SyncEnabled", typeof(bool)])
             {
-                LogClient.LogMessage($"Verifying Sync...");
                 SyncSource S = SyncProviderManager.GetSource((string)PatchMod.Config["SyncMode"]);
                 if (S == null)
                 {
@@ -48,15 +49,20 @@ namespace PatchMod
                 {
                     S.Source = (string)PatchMod.Config["SyncPath"];
                     S.Init();
+                    LogClient.LogMessage($"Starting Sync...");
                     FileSync.SyncFrom(S);
-                    LogClient.LogMessage($"Sync Check Complete.");
+                    if (S.FilesChanged)
+                    {
+                        LogClient.LogMessage($"Files synced from server. Acquired {S.NewFiles} new file/s from server.");
+                    } else
+                    {
+                        LogClient.LogMessage($"Files are up to date.");
+
+                    }
+                    S.Shutdown();
                 }
             }
 
-            if (Patcher.PatchMessageSent)
-            {
-                LogClient.LogMessage($"Patches Complete");
-            }
 
         }
 

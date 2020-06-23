@@ -1,10 +1,6 @@
 ﻿using PatchMod.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PatchMod.Modules
 {
@@ -12,7 +8,7 @@ namespace PatchMod.Modules
     {
         public static SyncSource GetSource(string Name)
         {
-            foreach(Type T in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (Type T in Assembly.GetExecutingAssembly().GetTypes())
             {
                 if (T == typeof(SyncSource)) continue;
                 if (typeof(SyncSource).IsAssignableFrom(T))

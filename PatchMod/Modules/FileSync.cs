@@ -20,21 +20,26 @@ namespace PatchMod.Modules
                 if (!Exclusions.SyncPath(LFile.Path)) continue;
 
                 string RealPath = Path.Combine(PathHelpers.RocketDirectory, LFile.Name);
-
                 if (!File.Exists(RealPath) || !Source.CompareFiles(LFile.Path, RealPath))
                 {
-                    LogClient.LogMessage($"File requires update: {LFile.Path}");
+                    bool exists = File.Exists(RealPath);
                     File.Delete(RealPath);
-                    using (Stream FStream = LFile.GetStream())
-                    using (FileStream WriteStream = new FileStream(RealPath, FileMode.OpenOrCreate, FileAccess.Write))
+                    using (Stream RemoteStream = LFile.GetStream())
+                    using (FileStream LocalStream = new FileStream(RealPath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        FStream.CopyTo(WriteStream);
+                        RemoteStream.CopyTo(LocalStream);
+                        LocalStream.Flush();
+                        LocalStream.Close();
                     }
-                    LogClient.LogMessage($"Updated: {LFile.Path}");
-                }
-                else
-                {
-                    LogClient.LogMessage($"File is up to date: {LFile.Path}");
+                    Source.FilesChanged = true;
+                    Source.NewFiles += 1;
+                    if (exists)
+                    {
+                        LogClient.LogMessage($"[Sync][Updated][File]: {LFile.Path}");
+                    } else
+                    {
+                        LogClient.LogMessage($"[Sync][Created][File]: {LFile.Path}");
+                    }
                 }
             }
 
@@ -45,10 +50,14 @@ namespace PatchMod.Modules
                 {
                     if (!Directory.Exists(RealPath))
                     {
-                        LogClient.LogMessage($"Creating Directory: {Dir.Path}");
+                        Source.FilesChanged = true;
                         Directory.CreateDirectory(RealPath);
+                        LogClient.LogMessage($"[Sync][Created][Dir] :  {Dir.Path}");
+
                     }
+                    SyncDirectory(Source, Dir.Path, Exclusions);
                 }
+
             }
         }
 
@@ -57,35 +66,41 @@ namespace PatchMod.Modules
             foreach (SyncFile LFile in Source.GetFiles(Dir))
             {
                 if (!Exclusions.SyncPath(LFile.Path)) continue;
-                string RealPath = Path.Combine(PathHelpers.RocketDirectory, Dir, LFile.Name);
-
+                string RealPath = Path.Combine(PathHelpers.RocketDirectory + Dir.Replace('/', '\\'), LFile.Name.Replace('/', '\\'));
                 if (!File.Exists(RealPath) || !Source.CompareFiles(LFile.Path, RealPath))
                 {
-                    LogClient.LogMessage($"File requires update: {LFile.Path}");
+                    bool exists = File.Exists(RealPath);
                     File.Delete(RealPath);
-                    LogClient.LogMessage($"Updating: {LFile.Path}");
-                    using (Stream FStream = LFile.GetStream())
-                    using (FileStream WriteStream = new FileStream(RealPath, FileMode.OpenOrCreate, FileAccess.Write))
+                    using (Stream RemoteStream = LFile.GetStream())
+                    using (FileStream LocalStream = new FileStream(RealPath, FileMode.OpenOrCreate, FileAccess.Write))
                     {
-                        FStream.CopyTo(WriteStream);
+                        RemoteStream.CopyTo(LocalStream);
+                        LocalStream.Flush();
+                        LocalStream.Close();
                     }
-                    LogClient.LogMessage($"Updated: {LFile.Path}");
-                }
-                else
-                {
-                    LogClient.LogMessage($"File is up to date: {LFile.Path}");
+                    Source.FilesChanged = true;
+                    Source.NewFiles += 1;
+                    if (exists)
+                    {
+                        LogClient.LogMessage($"[Sync][Updated][File]:  {LFile.Path}");
+                    }
+                    else
+                    {
+                        LogClient.LogMessage($"[Sync][Created][File]:  {LFile.Path}");
+                    }
                 }
             }
 
             foreach (SyncDirectory SDir in Source.GetDirectories(Dir))
             {
-                string RealPath = Path.Combine(PathHelpers.RocketDirectory, Dir, SDir.Name);
+                string RealPath = Path.Combine(PathHelpers.RocketDirectory + Dir.Replace('/', '\\'), SDir.Name);
                 if (Exclusions.SyncPath(SDir.Path))
                 {
                     if (!Directory.Exists(RealPath))
                     {
-                        LogClient.LogMessage($"Creating Directory: {SDir.Path}");
                         Directory.CreateDirectory(RealPath);
+                        LogClient.LogMessage($"[Sync][Created][Dir] :  {SDir.Path}");
+                        Source.FilesChanged = true;
                     }
                     SyncDirectory(Source, SDir.Path, Exclusions);
                 }

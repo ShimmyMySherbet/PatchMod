@@ -5,6 +5,8 @@ namespace PatchMod.Models
     public abstract class SyncSource
     {
         public string Source;
+        public bool FilesChanged = false;
+        public int NewFiles = 0;
         public abstract string Name { get; }
 
         public abstract SyncFile[] GetFiles(string dir);
@@ -18,5 +20,6 @@ namespace PatchMod.Models
             return false;
         }
         public virtual void Init() { }
+        public virtual void Shutdown() { }
     }
 }

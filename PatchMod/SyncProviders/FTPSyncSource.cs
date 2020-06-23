@@ -2,6 +2,7 @@
 using PatchMod.Models;
 using PatchMod.Modules;
 using Rocket.Core.Logging;
+using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,8 +30,13 @@ namespace PatchMod.SyncProviders
                 LogClient.LogMessage($"FTP Connected.");
             } else
             {
-                LogClient.LogMessage($"Unable to connect via FTP.");
+                LogClient.LogMessage($"Unable to connect to remote host via FTP.");
             }
+        }
+
+        public override void Shutdown()
+        {
+            Client.Dispose();
         }
 
         public override SyncDirectory[] GetDirectories(string dir)
@@ -40,11 +46,6 @@ namespace PatchMod.SyncProviders
             List<SyncDirectory> Dirs = new List<SyncDirectory>();
             foreach(var e in Client.GetListing())
             {
-                string Ref = e.FullName.Remove(0, Source.Length).Trim('/', '\\');
-                LogClient.LogMessage($"Ent: {e.FullName}");
-                LogClient.LogMessage($"Lname: {e.Name}");
-                LogClient.LogMessage($"Type: {e.Type}");
-                LogClient.LogMessage($"Ref: {Ref}");
                 if (e.Type == FtpFileSystemObjectType.Directory) Dirs.Add(new SyncDirectory() { Name = e.Name, Path = e.FullName, Source = this});
             }
             return Dirs.ToArray();
@@ -57,11 +58,6 @@ namespace PatchMod.SyncProviders
             List<SyncFile> Files = new List<SyncFile>();
             foreach (var e in Client.GetListing())
             {
-                string Ref = e.FullName.Remove(0, Source.Length).Trim('/', '\\');
-                LogClient.LogMessage($"Ent: {e.FullName}");
-                LogClient.LogMessage($"Lname: {e.Name}");
-                LogClient.LogMessage($"Type: {e.Type}");
-                LogClient.LogMessage($"Ref: {Ref}");
                 if (e.Type == FtpFileSystemObjectType.File) Files.Add(new SyncFile() { Name = e.Name, Path = e.FullName, Source = this });
             }
             return Files.ToArray();
@@ -70,10 +66,25 @@ namespace PatchMod.SyncProviders
         public override Stream ReadFile(string path)
         {
             string Local = Path.Combine(Source, path);
-            //Client.SetWorkingDirectory(Local);
             MemoryStream MemS = new MemoryStream();
-            Client.Download(MemS, Local);
+            if(!Client.Download(MemS, Local))
+            {
+                LogClient.LogMessage($"Failed to download file {path}");
+            }
+            MemS.Seek(0, SeekOrigin.Begin);
             return MemS;
+        }
+
+        public override bool CompareFiles(string path, string localpath)
+        {
+            string Remote = "/" + Path.Combine(Source, path.Trim('/', '\\'));
+            var result = Client.CompareFile(localpath, Remote, FtpCompareOption.Checksum);
+            if (result == FtpCompareResult.FileNotExisting) return true;
+            if (result == FtpCompareResult.ChecksumNotSupported)
+            {
+                result = Client.CompareFile(localpath, Remote, FtpCompareOption.Size);
+            }
+            return result == FtpCompareResult.Equal;
         }
     }
 }

@@ -19,7 +19,6 @@ namespace PatchMod.Models
                     string Name = Line.TrimStart('!');
                     SyncExclusion NE = new SyncExclusion();
                     NE.Path = Name;
-                    System.Console.WriteLine($">{Line}");
                     NE.Mode = Line.StartsWith("!");
                     Exclusions.Add(NE);
                 }
@@ -27,19 +26,16 @@ namespace PatchMod.Models
         }
         public bool SyncPath(string LocalPath)
         {
-            string Rel = LocalPath.ToLower().Trim('\\');
+            LocalPath = LocalPath.Replace('/', '\\');
+            string Rel = LocalPath.ToLower().Trim('\\', '/');
             bool Stat = true;
             foreach (SyncExclusion Exclusion in Exclusions)
             {
-                if (Exclusion.Path.ToLower() == Rel)
+                if (Exclusion.Path.Replace('/', '\\').ToLower() == Rel)
                 {
                     Stat = Exclusion.Mode;
                     break;
                 }
-            }
-            if (!Stat)
-            {
-                LogClient.LogMessage($"Sync Exlcusion for file {Rel}");
             }
             return Stat;
         }
