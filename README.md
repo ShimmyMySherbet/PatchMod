@@ -3,14 +3,18 @@ An Unturned Module that allows you to sync RocketMod files between servers, and 
 
 This module loads before RocketMod, so that it can access RocketMod's files before it loads.
 
-It creates a sort of 'mirror' folder in your server folder. Any files/folders placed in this folder will be moved to rocket (overwriting where needed) the next time the server restarts.
-
-PatchMod also provides a file to schedule file deletions.
-
+Features:
+<ul>
+  <li>Corss-Server Rocket Syncing</li>
+  <li>Remote FTP Corss-Server Syncing</li>
+  <li>Sync Exclusions System</li>
+  <li>Platform to create custom sync soruces (e.g., from an SQL Database)</li>
+  <li>Schedule file changes and/or deletions for the next server restart.</li>
+</ul>
 
 # Syncing
 
-PatchMod provides a feature to sync RocketMod files between servers. This can be enabled and configured in Config.ini. When the server starts, and before RocketMod loads, PatchMod will sync files from the specified source. It will create new files, and update existing ones, if they are different from the sync source files.
+PatchMod provides a feature to sync RocketMod files between servers. This can be enabled and configured in Config.ini. When the server starts, and before RocketMod loads, PatchMod will sync files from the specified source. It will create new files, and update existing ones if they are different from the sync source files.
 
 PatchMod has support to sync from a local directory, or remotely via FTP.
 
@@ -36,7 +40,7 @@ You can exclude files and folders from being synced in '<i>.SyncExclude</i>', lo
 
 # Schedule Changes
 
-PatchMod also has a means to schedule file changes for the next time the server starts. This works similarly to the Syncing feature listed above, however it deleted the files after they have been updated in the rocket folder. This is useful to schedule plugin updates for the next time the server restarts, rather than having to restart the server.
+PatchMod also has the means to schedule file changes for the next time the server starts. This works similarly to the Syncing feature listed above, however, it deleted the files after they have been updated in the rocket folder. This is useful to schedule plugin updates for the next time the server restarts, rather than having to restart the server.
 
 You can find this folder under MyServer\PatchMod\Patch
 
