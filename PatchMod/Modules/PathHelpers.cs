@@ -15,6 +15,42 @@ namespace PatchMod.Modules
             }
         }
 
+        public static string ModulesDirectory
+        {
+            get
+            {
+                return Path.Combine(UnturnedDirectory, "Modules");
+            }
+        }
+
+        public static string PatchModModuleDirectory
+        {
+            get
+            {
+                return Path.Combine(ModulesDirectory, "PatchMod");
+            }
+        }
+
+
+
+        public static string PatchModDepDirectory
+        {
+            get
+            {
+                return Path.Combine(PatchModModuleDirectory, "Lib");
+            }
+        }
+
+
+        public static string PatchModPluginsDirectory
+        {
+            get
+            {
+                return Path.Combine(PatchModModuleDirectory, "SyncProviders");
+            }
+        }
+
+
         public static string ServerDirectory
         {
             get
@@ -55,7 +91,7 @@ namespace PatchMod.Modules
             }
         }
 
-        public static string PatchModPluginsDirectory
+        public static string PatchModPatchPluginsDirectory
         {
             get
             {
@@ -89,14 +125,17 @@ namespace PatchMod.Modules
 
         public static void CheckDirectories()
         {
+            if (!Directory.Exists(PatchModPluginsDirectory))
+                Directory.CreateDirectory(PatchModPluginsDirectory);
+
             if (!Directory.Exists(PatchModDirectory))
                 Directory.CreateDirectory(PatchModDirectory);
             if (!Directory.Exists(PatchModPatchDirectory))
                 Directory.CreateDirectory(PatchModPatchDirectory);
             if (!Directory.Exists(PatchModLibrariesDirectory))
                 Directory.CreateDirectory(PatchModLibrariesDirectory);
-            if (!Directory.Exists(PatchModPluginsDirectory))
-                Directory.CreateDirectory(PatchModPluginsDirectory);
+            if (!Directory.Exists(PatchModPatchPluginsDirectory))
+                Directory.CreateDirectory(PatchModPatchPluginsDirectory);
             if (!File.Exists(Path.Combine(PatchModPatchDirectory, "patchmod.remlist.txt")))
                 File.WriteAllText(Path.Combine(PatchModPatchDirectory, "patchmod.remlist.txt"), "#Put paths to file/folders to delete in here.\n");
             if (!File.Exists(PathModSyncExclusions))

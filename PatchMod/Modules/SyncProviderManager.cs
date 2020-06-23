@@ -17,6 +17,17 @@ namespace PatchMod.Modules
                     if (Instance.Name.ToLower() == Name.ToLower()) return Instance;
                 }
             }
+            foreach(Assembly Plugin in LibManager.AvailablePlugins)
+            {
+                foreach(Type T in Plugin.GetTypes())
+                {
+                    if (typeof(SyncSource).IsAssignableFrom(T))
+                    {
+                        SyncSource Instance = (SyncSource)Activator.CreateInstance(T);
+                        if (Instance.Name.ToLower() == Name.ToLower()) return Instance;
+                    }
+                }
+            }
             return null;
         }
     }

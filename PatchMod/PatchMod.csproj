@@ -64,6 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Modules\LibManager.cs" />
     <Compile Include="SyncProviders\LocalSyncSource.cs" />
     <Compile Include="Models\SyncExclusion.cs" />
     <Compile Include="Models\SyncExclusionList.cs" />

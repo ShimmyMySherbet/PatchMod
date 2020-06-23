@@ -30,7 +30,9 @@ namespace PatchMod
         public void Init()
         {
             LogClient.LogMessage("Loading PatchMod");
+            LibManager.LoadDeps();
             PathHelpers.CheckDirectories();
+            LibManager.LoadPlugins();
             LogClient.LogMessage("PatchMod Loaded");
             Patcher.Patch();
 
