@@ -24,7 +24,6 @@ namespace PatchMod
             {
                 LogClient.LogMessage($"Failed to sync: {ex.Message}");
             }
-            Console.ReadLine();
         }
 
         public void Init()
