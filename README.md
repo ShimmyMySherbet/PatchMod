@@ -12,6 +12,10 @@ Features:
   <li>Schedule file changes and/or deletions for the next server restart.</li>
 </ul>
 
+# OpenMod
+
+Support for OpenMod is planned once it is released.
+
 # Syncing
 
 PatchMod provides a feature to sync RocketMod files between servers. This can be enabled and configured in Config.ini. When the server starts, and before RocketMod loads, PatchMod will sync files from the specified source. It will create new files, and update existing ones if they are different from the sync source files.
