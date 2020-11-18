@@ -29,6 +29,11 @@ namespace PatchMod
         public void Init()
         {
             LogClient.LogMessage("Loading PatchMod");
+            if (!System.IO.Directory.Exists(PathHelpers.PatchModDepDirectory))
+            {
+                LogClient.LogMessage($"ERROR: Missing lib directory at {PathHelpers.PatchModDepDirectory}");
+            }
+
             LibManager.LoadDeps();
             PathHelpers.CheckDirectories();
             LibManager.LoadPlugins();

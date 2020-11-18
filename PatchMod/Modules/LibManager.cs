@@ -13,7 +13,7 @@ namespace PatchMod.Modules
         public static List<Assembly> AvailablePlugins = new List<Assembly>();
         public static void LoadDeps()
         {
-            foreach (string dep in Directory.GetFiles(PathHelpers.PatchModDepDirectory))
+            foreach (string dep in Directory.GetFiles(PathHelpers.PatchModDepDirectory, "*.dll"))
             {
                 Assembly.LoadFrom(dep);
             }

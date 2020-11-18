@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30204.135
+VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchMod", "PatchMod\PatchMod.csproj", "{BA5AA837-E3BC-45FB-BB4D-0B3ED4FE3EEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatchMod", "PatchMod\PatchMod.csproj", "{14CEDBF1-C897-4A4E-94BD-4FBE8AAD1045}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,15 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{BA5AA837-E3BC-45FB-BB4D-0B3ED4FE3EEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA5AA837-E3BC-45FB-BB4D-0B3ED4FE3EEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA5AA837-E3BC-45FB-BB4D-0B3ED4FE3EEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA5AA837-E3BC-45FB-BB4D-0B3ED4FE3EEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14CEDBF1-C897-4A4E-94BD-4FBE8AAD1045}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14CEDBF1-C897-4A4E-94BD-4FBE8AAD1045}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14CEDBF1-C897-4A4E-94BD-4FBE8AAD1045}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14CEDBF1-C897-4A4E-94BD-4FBE8AAD1045}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EF588DC5-6CBB-406A-B57A-4DF69144CEA8}
+		SolutionGuid = {C6127D00-E5C5-4F38-B178-56EAB65ECD8C}
 	EndGlobalSection
 EndGlobal
