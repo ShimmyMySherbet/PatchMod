@@ -10,22 +10,22 @@
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp">
-      <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\Assembly-CSharp.dll</HintPath>
+      <HintPath>Deps\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\Assembly-CSharp-firstpass.dll</HintPath>
+      <HintPath>Deps\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Rocket.Core">
-      <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\Rocket.Core.dll</HintPath>
+      <HintPath>Deps\Rocket.Core.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\UnityEngine.dll</HintPath>
+      <HintPath>Deps\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>Deps\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>..\..\..\..\Documents\RocketModLibraries\INTERNAL\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>Deps\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -33,6 +33,10 @@
     <None Update="netstandard.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
