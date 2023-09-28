@@ -5,10 +5,10 @@ This module loads before RocketMod, so that it can access RocketMod's files befo
 
 Features:
 <ul>
-  <li>Corss-Server Rocket Syncing</li>
-  <li>Remote FTP Corss-Server Syncing</li>
+  <li>Cross-Server Rocket Syncing</li>
+  <li>Remote FTP Cross-Server Syncing</li>
   <li>Sync Exclusions System</li>
-  <li>Platform to create custom sync soruces (e.g., from an SQL Database)</li>
+  <li>Platform to create custom sync sources (e.g., from an SQL Database)</li>
   <li>Schedule file changes and/or deletions for the next server restart.</li>
 </ul>
 
